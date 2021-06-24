@@ -19,7 +19,7 @@ namespace SportStore.Tests
             new Product {ProductID = 2, Name = "P2" }}).AsQueryable<Product>());
             HomeController homeController = new HomeController(mock.Object);
             //Действие
-            IEnumerable<Product> result = (homeController.Index() as ViewResult).ViewData.Model as IEnumerable<Product>;
+            IEnumerable<Product> result = (homeController.Index(null) as ViewResult).ViewData.Model as IEnumerable<Product>;
             //Утверждение
             Product[] prodArray = result.ToArray();
             Assert.True(prodArray.Length == 2);
@@ -41,7 +41,7 @@ namespace SportStore.Tests
             HomeController homeController = new HomeController(mock.Object);
             homeController.productsOnPage = 3;
             //Действие
-            IEnumerable<Product> result = (homeController.Index(1) as ViewResult).ViewData.Model as IEnumerable<Product>;
+            IEnumerable<Product> result = (homeController.Index(null,1) as ViewResult).ViewData.Model as IEnumerable<Product>;
             //Утверждение
             Product[] prodArray = result.ToArray();
             Assert.True(prodArray.Length == 3);

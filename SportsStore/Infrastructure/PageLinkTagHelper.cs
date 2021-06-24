@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using SportsStore.Models.ViewModels;
+using System.Collections.Generic;
 
 
 namespace SportsStore.Infrastructure
@@ -21,6 +22,8 @@ namespace SportsStore.Infrastructure
         public ViewContext ViewContex { get; set; }
         public PagingInfo PageModel { get; set; }
         public string PageAction { get; set; }
+        [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]
+        public Dictionary<string, object> PageUrlValues { get; set; } = new Dictionary<string, object>();
         public bool PageClassesEnabled { get; set; } = false;
         public string PageClass { get; set; }
         public string PageClassNormal { get; set; }
@@ -37,6 +40,11 @@ namespace SportsStore.Infrastructure
             IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContex);
             TagBuilder result = new TagBuilder("div");
             result.InnerHtml.AppendHtml(CreatePageTag(PageModel.CurrentPage - 1, urlHelper, "«"));
+            if(FirstPageOnPagination < 1)
+            {
+                FirstPageOnPagination = 1;
+                PageScope = PageModel.TotalPages - FirstPageOnPagination;
+            }
             for (int i = FirstPageOnPagination; i <= FirstPageOnPagination + PageScope; i++)
             {
                 result.InnerHtml.AppendHtml(CreatePageTag(i, urlHelper));
@@ -49,7 +57,8 @@ namespace SportsStore.Infrastructure
         public TagBuilder CreatePageTag(int i, IUrlHelper urlHelper, string value = "")
         {
             TagBuilder tag = new TagBuilder("a");
-            tag.Attributes["href"] = urlHelper.Action(PageAction, new { productPage = i });
+            PageUrlValues["productPage"] = i;
+            tag.Attributes["href"] = urlHelper.Action(PageAction, PageUrlValues);
             if (PageClassesEnabled )
             {
                 if (i == 0 || i == PageModel.TotalPages + 1) tag.AddCssClass("disabled"); 

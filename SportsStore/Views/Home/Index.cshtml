@@ -1,7 +1,5 @@
 ﻿@model ProductListViewModel
-@{
-    Layout = "_Layout";
-}
+
 @foreach (var p in Model.Products)
 {
     <partial name="ProductSummary" model="p"/>

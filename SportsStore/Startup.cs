@@ -64,6 +64,7 @@ namespace SportsStore
                 endpoints.MapFallbackToPage("/admin/{*catchall}","/Admin/Index");
             });
             SeedData.EnsurePopulated(app);
+            IdentitySeedData.EnsurePopulated(app);
         }
     }
 }
